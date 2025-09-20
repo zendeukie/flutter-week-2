@@ -121,8 +121,8 @@ class TaskCard extends StatelessWidget {
   final String title;
   final String description;
   final String priority;
-  final String? dueDate; // ✅ Task B
-  final String? assignee; // ✅ Task B
+  final String? dueDate;
+  final String? assignee;
 
   const TaskCard({
     super.key,
@@ -135,81 +135,93 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Row 1: Title + Due Date
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: Theme.of(context).textTheme.titleMedium,
+    return InkWell(
+      onTap: () {
+        // ✅ When tapped, show task details in a snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Task: $title\nPriority: $priority')),
+        );
+      },
+      onLongPress: () {
+        // ✅ When long pressed, mark as done
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$title marked as done! ✅')));
+      },
+      child: Card(
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title + Due Date
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
                         ),
+                        if (dueDate != null)
+                          IconLabel(
+                            icon: Icons.access_time,
+                            label: dueDate!,
+                            color: Colors.blue,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+
+                    // Description
+                    Text(
+                      description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Assignee
+                    if (assignee != null) ...[
+                      Row(
+                        children: [
+                          IconLabel(
+                            icon: Icons.person,
+                            label: assignee!,
+                            color: Colors.purple,
+                          ),
+                        ],
                       ),
-                      if (dueDate != null)
-                        IconLabel(
-                          icon: Icons.access_time,
-                          label: dueDate!,
-                          color: Colors.blue,
-                        ),
+                      const SizedBox(height: 8),
                     ],
-                  ),
 
-                  const SizedBox(height: 6),
-
-                  // Description
-                  Text(
-                    description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Row 2: Assignee
-                  if (assignee != null) ...[
+                    // Comments + done count
                     Row(
                       children: [
                         IconLabel(
-                          icon: Icons.person,
-                          label: assignee!,
-                          color: Colors.purple,
+                          icon: Icons.comment,
+                          label: '2 comments',
+                          color: Colors.grey[700],
+                        ),
+                        const SizedBox(width: 12),
+                        IconLabel(
+                          icon: Icons.check_circle_outline,
+                          label: '0 done',
+                          color: Colors.green,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
                   ],
-
-                  // Row 3: Comments + done count (just sample)
-                  Row(
-                    children: [
-                      IconLabel(
-                        icon: Icons.comment,
-                        label: '2 comments',
-                        color: Colors.grey[700],
-                      ),
-                      const SizedBox(width: 12),
-                      IconLabel(
-                        icon: Icons.check_circle_outline,
-                        label: '0 done',
-                        color: Colors.green,
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            _PriorityBadge(priority: priority),
-          ],
+              const SizedBox(width: 12),
+              _PriorityBadge(priority: priority),
+            ],
+          ),
         ),
       ),
     );
