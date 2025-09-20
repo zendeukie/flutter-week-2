@@ -25,7 +25,6 @@ class TaskApp extends StatelessWidget {
 class TaskListPage extends StatelessWidget {
   const TaskListPage({super.key});
 
-  // ✅ demo tasks now include dueDate + assignee
   static final _demoTasks = [
     {
       'title': 'Write unit tests',
@@ -39,7 +38,7 @@ class TaskListPage extends StatelessWidget {
       'description': 'Move logic into a reusable AuthService and clean up UI.',
       'priority': 'Low',
       'dueDate': '2025-09-28',
-      'assignee': 'Alex',
+      'assignee': 'Lizmer',
     },
   ];
 
@@ -135,7 +134,6 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 👇 Replace old return Card(...) with this
     return InkWell(
       onTap: () {
         ScaffoldMessenger.of(context).showSnackBar(
