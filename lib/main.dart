@@ -135,38 +135,44 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 👇 Replace old return Card(...) with this
     return InkWell(
       onTap: () {
-        // ✅ When tapped, show task details in a snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Task: $title\nPriority: $priority')),
         );
       },
       onLongPress: () {
-        // ✅ When long pressed, mark as done
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('$title marked as done! ✅')));
       },
       child: Card(
-        elevation: 2,
+        color: Colors.grey[50],
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(16),
           child: Row(
             children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title + Due Date
+                    // Title
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+
+                    // Priority + due date inline
                     Row(
                       children: [
-                        Expanded(
-                          child: Text(
-                            title,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ),
+                        _PriorityBadge(priority: priority),
+                        const SizedBox(width: 12),
                         if (dueDate != null)
                           IconLabel(
                             icon: Icons.access_time,
@@ -175,51 +181,39 @@ class TaskCard extends StatelessWidget {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
 
                     // Description
                     Text(
                       description,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
                     ),
                     const SizedBox(height: 8),
 
-                    // Assignee
-                    if (assignee != null) ...[
-                      Row(
-                        children: [
+                    // Assignee + comments
+                    Row(
+                      children: [
+                        if (assignee != null)
                           IconLabel(
                             icon: Icons.person,
                             label: assignee!,
                             color: Colors.purple,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-
-                    // Comments + done count
-                    Row(
-                      children: [
+                        const SizedBox(width: 12),
                         IconLabel(
                           icon: Icons.comment,
                           label: '2 comments',
                           color: Colors.grey[700],
-                        ),
-                        const SizedBox(width: 12),
-                        IconLabel(
-                          icon: Icons.check_circle_outline,
-                          label: '0 done',
-                          color: Colors.green,
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              _PriorityBadge(priority: priority),
             ],
           ),
         ),
